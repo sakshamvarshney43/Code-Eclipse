@@ -11,3 +11,79 @@ import FileUpload from "./components/FileUpload.jsx";
 import SnippetDropdown from "./components/SnippetDropdown.jsx";
 import ErrorPanel from "./components/ErrorPanel.jsx";
 import ProjectHistory from "./components/ProjectHistory.jsx";
+
+const API = "http://localhost:5000/api";
+
+export default function App() {
+  const [dark, setDark] = useState(true);
+
+  //Editor
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  //Tree Data
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [errors, setErrors] = useState([]);
+
+  //UI States
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
+
+  //parsing java code
+  const handleParse = useCallback(async () => {
+    if (!code.trim()) return;
+
+    setLoading(true);
+    setErrors([]);
+    setSelectedClass(null);
+
+    try {
+      const { data } = await axios.post(`${API}/parse`, { code });
+      setNodes(data.nodes);
+      setEdges(data.edges);
+      setClasses(data.classes);
+      setErrors(data.errors || []);
+    } catch (err) {
+      setErrors([err.response?.data?.error || "Failed to parse the code"]);
+    } finally {
+      setLoading(false);
+    }
+  }, [code]);
+
+  //File Upload
+  const handleFileUpload = useCallback(async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const { data } = await axios.post(`${API}/upload`, formData);
+      setCode(data.code);
+    } catch (err) {
+      setErrors([err.response?.data?.error || "File upload Failed"]);
+    }
+  }, []);
+
+  //Load Saved Project
+  const handleLoadProject = useCallback((project) => {
+    setCode(project.javaCode);
+    setNodes(project.nodes);
+    setEdges(project.edges);
+    setClasses(project.classes);
+    setErrors(project.errors || []);
+    setShowHistory(false);
+  }, []);
+
+  //clear canvas
+  const handleClear = useCallback(() => {
+    setCode("");
+    setNodes([]);
+    setEdges([]);
+    setClasses([]);
+    setErrors([]);
+    setSelectedClass(null);
+    setSearchQuery("");
+  }, []);
+}
