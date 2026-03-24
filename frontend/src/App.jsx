@@ -17,22 +17,22 @@ const API = "http://localhost:5000/api";
 export default function App() {
   const [dark, setDark] = useState(true);
 
-  //Editor
+  // Editor
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //Tree Data
+  // Tree Data
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [classes, setClasses] = useState([]);
   const [errors, setErrors] = useState([]);
 
-  //UI States
+  // UI state
   const [selectedClass, setSelectedClass] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showHistory, setShowHistory] = useState(false);
 
-  //parsing java code
+  // Java Parsing Code
   const handleParse = useCallback(async () => {
     if (!code.trim()) return;
 
@@ -53,7 +53,7 @@ export default function App() {
     }
   }, [code]);
 
-  //File Upload
+  // File Upload
   const handleFileUpload = useCallback(async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -66,7 +66,7 @@ export default function App() {
     }
   }, []);
 
-  //Load Saved Project
+  // Load Saved Projects
   const handleLoadProject = useCallback((project) => {
     setCode(project.javaCode);
     setNodes(project.nodes);
@@ -76,7 +76,7 @@ export default function App() {
     setShowHistory(false);
   }, []);
 
-  //clear canvas
+  // Clear Canvas
   const handleClear = useCallback(() => {
     setCode("");
     setNodes([]);
@@ -86,4 +86,93 @@ export default function App() {
     setSelectedClass(null);
     setSearchQuery("");
   }, []);
+
+  return (
+    <div
+      className={dark ? "dark" : ""}
+      style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+    >
+      {/* Navbar */}
+      <Navbar
+        dark={dark}
+        onToggleTheme={() => setDark(!dark)}
+        searchQuery={searchQuery}
+        onSearch={setSearchQuery}
+        onToggleHistory={() => setShowHistory(!showHistory)}
+      />
+
+      {/* Main Layout */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        {/* Editor Side */}
+        <div
+          style={{
+            width: "380px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            padding: "10px",
+            background: "var(--bg-secondary)",
+            borderRight: "1px solid var(--border)",
+            overflowY: "auto",
+          }}
+        >
+          <SnippetDropdown onSelect={setCode} />
+          <FileUpload onUpload={handleFileUpload} />
+          <CodeEditor code={code} onChange={setCode} />
+
+          {/* Parse + Clear button */}
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              className="btn btn-accent"
+              style={{ flex: 1 }}
+              onClick={handleParse}
+              disabled={loading}
+            >
+              {loading ? "Parsing..." : "Parse"}
+            </button>
+            <button className="btn" onClick={handleClear}>
+              Clear
+            </button>
+          </div>
+
+          <ErrorPanel errors={errors} />
+        </div>
+
+        {/* Canvas Side(graph) */}
+        <div style={{ flex: 1, position: "relative" }}>
+          <TreeCanvas
+            nodes={nodes}
+            edges={edges}
+            searchQuery={searchQuery}
+            onNodeClick={(cls) => setSelectedClass(cls)}
+          />
+
+          {/* Overlay */}
+          <Legend />
+          <ExportBar />
+
+          {/* Hover Error Panel */}
+          {selectedClass && (
+            <HoverPanel
+              cls={selectedClass}
+              onClose={() => setSelectedClass(null)}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Project History SideBar */}
+      {showHistory && (
+        <ProjectHistory
+          code={code}
+          nodes={nodes}
+          edges={edges}
+          classes={classes}
+          errors={errors}
+          onLoad={handleLoadProject}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
+    </div>
+  );
 }
