@@ -1,37 +1,37 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 
-import Navbar         from "./components/Navbar.jsx";
-import CodeEditor     from "./components/CodeEditor.jsx";
-import TreeCanvas     from "./components/TreeCanvas.jsx";
-import HoverPanel     from "./components/HoverPanel.jsx";
-import Legend         from "./components/Legend.jsx";
-import ExportBar      from "./components/ExportBar.jsx";
-import FileUpload     from "./components/FileUpload.jsx";
+import Navbar from "./components/Navbar.jsx";
+import CodeEditor from "./components/CodeEditor.jsx";
+import TreeCanvas from "./components/TreeCanvas.jsx";
+import HoverPanel from "./components/HoverPanel.jsx";
+import Legend from "./components/Legend.jsx";
+import ExportBar from "./components/ExportBar.jsx";
+import FileUpload from "./components/FileUpload.jsx";
 import SnippetDropdown from "./components/SnippetDropdown.jsx";
-import ErrorPanel     from "./components/ErrorPanel.jsx";
+import ErrorPanel from "./components/ErrorPanel.jsx";
 import ProjectHistory from "./components/ProjectHistory.jsx";
 
-const API = "http://localhost:5000/api";
+const API = "https://code-eclipse-backend.onrender.com/api";
 
 export default function App() {
   const [dark, setDark] = useState(true);
 
   // Editor state
-  const [code,    setCode]    = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Tree data
-  const [nodes,   setNodes]   = useState([]);
-  const [edges,   setEdges]   = useState([]);
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [errors,  setErrors]  = useState([]);
+  const [errors, setErrors] = useState([]);
 
   // UI
   const [selectedClass, setSelectedClass] = useState(null);
-  const [searchQuery,   setSearchQuery]   = useState("");
-  const [showHistory,   setShowHistory]   = useState(false);
-  const [parseSuccess,  setParseSuccess]  = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
+  const [parseSuccess, setParseSuccess] = useState(false);
 
   // ── Parse ──────────────────────────────────────────────────
   const handleParse = useCallback(async () => {
@@ -97,10 +97,10 @@ export default function App() {
   }, []);
 
   // Stats summary
-  const classCount     = classes.length;
-  const methodCount    = classes.reduce((acc, c) => acc + (c.methodCount || 0), 0);
+  const classCount = classes.length;
+  const methodCount = classes.reduce((acc, c) => acc + (c.methodCount || 0), 0);
   const interfaceCount = classes.filter((c) => c.type === "interface").length;
-  const orphanCount    = classes.filter((c) => c.isOrphan).length;
+  const orphanCount = classes.filter((c) => c.isOrphan).length;
 
   return (
     <div
@@ -119,19 +119,18 @@ export default function App() {
 
       {/* ── Main Layout ── */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-
         {/* ── Left Sidebar ── */}
         <div
           style={{
-            width:         "360px",
-            display:       "flex",
+            width: "360px",
+            display: "flex",
             flexDirection: "column",
-            gap:           "10px",
-            padding:       "12px",
-            background:    "var(--bg-secondary)",
-            borderRight:   "1px solid var(--border)",
-            overflowY:     "auto",
-            flexShrink:    0,
+            gap: "10px",
+            padding: "12px",
+            background: "var(--bg-secondary)",
+            borderRight: "1px solid var(--border)",
+            overflowY: "auto",
+            flexShrink: 0,
           }}
         >
           {/* Snippet selector */}
@@ -148,8 +147,8 @@ export default function App() {
             <button
               className={`btn btn-accent`}
               style={{
-                flex:     1,
-                gap:      "6px",
+                flex: 1,
+                gap: "6px",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -161,18 +160,18 @@ export default function App() {
                 <div
                   className="fade-in"
                   style={{
-                    position:   "absolute",
-                    inset:      0,
+                    position: "absolute",
+                    inset: 0,
                     background: "var(--node-interface)",
                     borderRadius: "inherit",
-                    display:    "flex",
+                    display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap:        "6px",
+                    gap: "6px",
                     fontFamily: "'Outfit', sans-serif",
                     fontWeight: 700,
-                    fontSize:   "13px",
-                    color:      "#fff",
+                    fontSize: "13px",
+                    color: "#fff",
                   }}
                 >
                   ✓ Parsed!
@@ -207,34 +206,54 @@ export default function App() {
             <div
               className="fade-in"
               style={{
-                display:             "grid",
+                display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap:                 "6px",
+                gap: "6px",
               }}
             >
               {[
-                { label: "Classes",    value: classCount,     color: "var(--node-class)",     icon: "◼" },
-                { label: "Methods",    value: methodCount,    color: "var(--node-interface)",  icon: "ƒ" },
-                { label: "Interfaces", value: interfaceCount, color: "var(--node-abstract)",   icon: "◇" },
-                { label: "Orphans",    value: orphanCount,    color: "var(--node-orphan)",     icon: "⚠" },
+                {
+                  label: "Classes",
+                  value: classCount,
+                  color: "var(--node-class)",
+                  icon: "◼",
+                },
+                {
+                  label: "Methods",
+                  value: methodCount,
+                  color: "var(--node-interface)",
+                  icon: "ƒ",
+                },
+                {
+                  label: "Interfaces",
+                  value: interfaceCount,
+                  color: "var(--node-abstract)",
+                  icon: "◇",
+                },
+                {
+                  label: "Orphans",
+                  value: orphanCount,
+                  color: "var(--node-orphan)",
+                  icon: "⚠",
+                },
               ].map(({ label, value, color, icon }) => (
                 <div
                   key={label}
                   style={{
-                    background:   "var(--bg-panel)",
-                    border:       "1px solid var(--border)",
+                    background: "var(--bg-panel)",
+                    border: "1px solid var(--border)",
                     borderRadius: "10px",
-                    padding:      "8px 10px",
-                    display:      "flex",
-                    alignItems:   "center",
-                    gap:          "8px",
+                    padding: "8px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
                   }}
                 >
                   <span
                     style={{
-                      fontSize:  "14px",
+                      fontSize: "14px",
                       color,
-                      flexShrink:0,
+                      flexShrink: 0,
                     }}
                   >
                     {icon}
@@ -242,23 +261,23 @@ export default function App() {
                   <div>
                     <div
                       style={{
-                        fontFamily:   "'Outfit', sans-serif",
-                        fontWeight:   800,
-                        fontSize:     "18px",
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 800,
+                        fontSize: "18px",
                         color,
-                        lineHeight:   1,
+                        lineHeight: 1,
                       }}
                     >
                       {value}
                     </div>
                     <div
                       style={{
-                        fontFamily:    "'JetBrains Mono', monospace",
-                        fontSize:      "8px",
-                        color:         "var(--text-muted)",
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "8px",
+                        color: "var(--text-muted)",
                         textTransform: "uppercase",
                         letterSpacing: "0.08em",
-                        marginTop:     "1px",
+                        marginTop: "1px",
                       }}
                     >
                       {label}
