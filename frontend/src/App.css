@@ -1,0 +1,10 @@
+/* App-level layout helpers */
+/* All design tokens and component styles live in index.css */
+
+/* Ensure full height propagation */
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
