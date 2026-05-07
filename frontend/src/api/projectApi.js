@@ -1,5 +1,5 @@
 import axios from "axios";
-const API = "http://localhost:5000/api";
+const API = "https://code-eclipse-backend.onrender.com/api";
 
 //GET all projects
 export async function getAllProjects() {
