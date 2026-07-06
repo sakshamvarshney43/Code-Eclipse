@@ -26,7 +26,10 @@ function parseMethods(body) {
 
     //Ignore Constructors and common false positives
     if (returnType === "class" || returnType === "interface") continue;
-    if (name === "if" || name === "while" || name === "for") continue;
+    if (
+      ["if", "while", "for", "switch", "catch", "synchronized"].includes(name)
+    )
+      continue;
 
     methods.push({
       name,

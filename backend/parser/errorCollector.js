@@ -1,4 +1,4 @@
-export function collectErrors(classes, code) {
+export function collectErrors(classes) {
   const errors = [];
 
   const classMap = new Map();
