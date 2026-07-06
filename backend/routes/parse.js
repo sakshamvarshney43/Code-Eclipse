@@ -42,7 +42,7 @@ router.post("/", (req, res) => {
     detectOrphans(classes);
 
     //Error and Warning Collection in parsing
-    const errors = collectErrors(classes, code);
+    const errors = collectErrors(classes);
 
     //Building react flow nodes-->
     const nodes = classes.map((cl, index) => ({
