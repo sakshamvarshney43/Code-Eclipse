@@ -56,7 +56,7 @@ const projectSchema = new mongoose.Schema(
         isOrphan: Boolean,
       },
     ],
-    errorsList: [String],
+    errors: [String],
   },
   { timestamps: true },
 );

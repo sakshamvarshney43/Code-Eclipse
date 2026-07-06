@@ -308,7 +308,7 @@ export default function App() {
           {/* Class detail panel */}
           {selectedClass && (
             <HoverPanel
-              cls={selectedClass}
+              cl={selectedClass}
               onClose={() => setSelectedClass(null)}
             />
           )}
